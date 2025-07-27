@@ -1,146 +1,145 @@
-let current = 0, selectedAnswers = [], quizLocked = [], correctCount = 0;
-let timer = 1800; // Increased timer to 30 minutes (30 * 60 seconds)
+let current = 0,
+  selectedAnswers = [],
+  quizLocked = [],
+  correctCount = 0;
+let timer = 1200; // Increased timer to 20 minutes (20 * 60 seconds)
 let timerStarted = false;
 let timerInterval;
+const quizDiv = document.getElementById('quiz');
+const timerDiv = document.getElementById('timer');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const submitBtn = document.getElementById('submitBtn');
+const resetBtn = document.getElementById('resetBtn');
+const reportCard = document.getElementById('reportCard');
+const analysisCard = document.getElementById('analysisCard');
+const viewAnalysisBtn = document.getElementById('viewAnalysisBtn');
+const startBtn = document.getElementById('startBtn');
+const onlineTestBtn = document.getElementById('onlineTestBtn');
 
-const quizDiv = document.getElementById("quiz");
-const timerDiv = document.getElementById("timer");
-const prevBtn = document.getElementById("prevBtn");
-const nextBtn = document.getElementById("nextBtn");
-const submitBtn = document.getElementById("submitBtn");
-const resetBtn = document.getElementById("resetBtn");
-const reportCard = document.getElementById("reportCard");
-const analysisCard = document.getElementById("analysisCard");
-const viewAnalysisBtn = document.getElementById("viewAnalysisBtn");
-const startBtn = document.getElementById("startBtn");
-const onlineTestBtn = document.getElementById("onlineTestBtn");
-
-
-const questionElements = document.querySelectorAll(".question-data");
+const questionElements = document.querySelectorAll('.question-data');
 const questions = [];
-
-questionElements.forEach((qEl) => {
-  const q = qEl.querySelector(".q").innerText;
-  const opts = Array.from(qEl.querySelectorAll(".opt")).map(el => el.innerText);
-  const correctIndex = parseInt(qEl.getAttribute("data-answer"));
-  const explanation = qEl.getAttribute("data-explanation") || ""; // Get the explanation, default to empty string
-  questions.push({ question: q, options: opts, answer: correctIndex, explanation: explanation });
+questionElements.forEach(qEl => {
+  const q = qEl.querySelector('.q').innerText;
+  const opts = Array.from(qEl.querySelectorAll('.opt')).map(el => el.innerText);
+  const correctIndex = parseInt(qEl.getAttribute('data-answer'));
+  const explanation = qEl.getAttribute('data-explanation') || ''; // Get the explanation, default to empty string
+  questions.push({
+    question: q,
+    options: opts,
+    answer: correctIndex,
+    explanation: explanation,
+  });
 });
-document.getElementById("questionBank").style.display = "none";
+
+document.getElementById('questionBank').style.display = 'none';
 
 function showQuestion(index) {
   const q = questions[index];
   let html = `
     <div class="question">${q.question}</div>
     <div class="options">`;
-
   q.options.forEach((opt, i) => {
-    let cls = "option";
+    let cls = 'option';
     // Check if the answer is selected for this question
     if (selectedAnswers[index] === i && !quizLocked[index]) {
-      cls += " selected";
+      cls += ' selected';
     }
     html += `<div class='${cls}' onclick='selectAnswer(${index}, ${i})'>${opt}</div>`;
   });
-
   html += `</div>`;
   quizDiv.innerHTML = html;
-
   // Update question number in the dedicated span element
-  document.getElementById("questionNumber").textContent = `${index + 1}/${questions.length}`;
+  document.getElementById('questionNumber').textContent = `${
+    index + 1
+  }/${questions.length}`;
 }
 
 function selectAnswer(qIndex, aIndex) {
   if (quizLocked[qIndex]) return;
   selectedAnswers[qIndex] = aIndex;
   showQuestion(current);
-
+}
 
 function updateTimer() {
   let min = Math.floor(timer / 60);
   let sec = timer % 60;
   timerDiv.textContent = `🕛 ${min}:${sec < 10 ? '0' + sec : sec}`;
-   timer--;
+  timer--;
   if (timer < 0) {
     clearInterval(timerInterval);
     submitResults();
   }
 }
 
-
 function submitResults() {
   clearInterval(timerInterval);
-  document.getElementById("quizBox").style.display = 'none'; // Hide quiz box
+  document.getElementById('quizBox').style.display = 'none'; // Hide quiz box
   reportCard.style.display = 'block';
-
   let attempted = selectedAnswers.filter(v => v !== undefined).length;
-  correctCount = selectedAnswers.filter((v, i) => v === questions[i].answer).length;
-
-  document.getElementById("total").textContent = questions.length;
-  document.getElementById("attempted").textContent = attempted;
-  document.getElementById("correct").textContent = correctCount;
-  document.getElementById("wrong").textContent = attempted - correctCount;
-  document.getElementById("score").textContent = correctCount;
-  document.getElementById("totalScore").textContent = questions.length;
-
+  correctCount = selectedAnswers.filter(
+    (v, i) => v === questions[i].answer
+  ).length;
+  document.getElementById('total').textContent = questions.length;
+  document.getElementById('attempted').textContent = attempted;
+  document.getElementById('correct').textContent = correctCount;
+  document.getElementById('wrong').textContent = attempted - correctCount;
+  document.getElementById('score').textContent = correctCount;
+  document.getElementById('totalScore').textContent = questions.length;
   const percent = ((correctCount / questions.length) * 100).toFixed(2);
-  document.getElementById("percentage").textContent = percent;
-
-  const msg = percent >= 80 ? "Excellent Work" : percent >= 50 ? "Good Job" : "Keep Practicing";
-  document.getElementById("resultMessage").textContent = msg;
-
+  document.getElementById('percentage').textContent = percent;
+  const msg =
+    percent >= 80 ? 'Excellent Work' : percent >= 50 ? 'Good Job' : 'Keep Practicing';
+  document.getElementById('resultMessage').textContent = msg;
   quizLocked = questions.map(() => true);
 }
 
 function showAnalysis() {
   analysisCard.style.display = 'block';
   // reportCard.style.display = 'none'; // THIS LINE IS REMOVED
-  const container = document.getElementById("analysisContent");
-  container.innerHTML = "";
+  const container = document.getElementById('analysisContent');
+  container.innerHTML = '';
   questions.forEach((q, i) => {
     const userAnswer = selectedAnswers[i];
-    let feedback = "Question Not Attempted";
-    let feedbackClass = "not-attempted-feedback";
-
+    let feedback = 'Question Not Attempted';
+    let feedbackClass = 'not-attempted-feedback';
     if (userAnswer !== undefined) {
       const isCorrect = userAnswer === q.answer;
-      feedback = isCorrect ? "Your Answer is Correct" : "Your Answer is Wrong";
-      feedbackClass = isCorrect ? "correct-feedback" : "wrong-feedback";
+      feedback = isCorrect ? 'Your Answer is Correct' : 'Your Answer is Wrong';
+      feedbackClass = isCorrect ? 'correct-feedback' : 'wrong-feedback';
     }
-
     let html = `<div class='analysis-box'>
-  <div class="question-number">${i + 1}/${questions.length}</div>
-  <div><b>${q.question}</b></div>`;
-    
+    <div class="question-number">${i + 1}/${questions.length}</div>
+    <div><b>${q.question}</b></div>`;
+
     q.options.forEach((opt, j) => {
-      let cls = "option";
-      if (j === q.answer) cls += " correct";
-      else if (j === userAnswer) cls += " wrong";
+      let cls = 'option';
+      if (j === q.answer) cls += ' correct';
+      else if (j === userAnswer) cls += ' wrong';
       html += `<div class='${cls}' style='margin: 5px 0;'>${opt}</div>`;
     });
     html += `<div class='feedback ${feedbackClass}'>${feedback}</div>`;
-    
+
     // Add explanation box if explanation exists
     if (q.explanation) {
       html += `<div class='explanation-box'><b>Explanation:</b> ${q.explanation}</div>`;
     }
-
     container.innerHTML += html;
   });
 }
 
 prevBtn.onclick = () => {
-    if (current > 0) {
-        current--;
-        showQuestion(current);
-    }
+  if (current > 0) {
+    current--;
+    showQuestion(current);
+  }
 };
 
 nextBtn.onclick = () => {
-    if (current < questions.length - 1) {
-        current++;
-        showQuestion(current);
-    }
+  if (current < questions.length - 1) {
+    current++;
+    showQuestion(current);
+  }
 };
 
 submitBtn.onclick = submitResults;
@@ -158,4 +157,3 @@ startBtn.onclick = () => {
 
 // Initial display
 showQuestion(current);
-
