@@ -14,7 +14,7 @@ const analysisCard = document.getElementById("analysisCard");
 const viewAnalysisBtn = document.getElementById("viewAnalysisBtn");
 const startBtn = document.getElementById("startBtn");
 const onlineTestBtn = document.getElementById("onlineTestBtn");
-const solvedNumberSpan = document.getElementById("solvedNumber"); // Get the solved count span
+
 
 const questionElements = document.querySelectorAll(".question-data");
 const questions = [];
@@ -27,9 +27,6 @@ questionElements.forEach((qEl) => {
   questions.push({ question: q, options: opts, answer: correctIndex, explanation: explanation });
 });
 document.getElementById("questionBank").style.display = "none";
-
-// Initialize solved count
-updateSolvedCount();
 
 function showQuestion(index) {
   const q = questions[index];
@@ -57,8 +54,7 @@ function selectAnswer(qIndex, aIndex) {
   if (quizLocked[qIndex]) return;
   selectedAnswers[qIndex] = aIndex;
   showQuestion(current);
-  updateSolvedCount(); // Update solved count whenever an answer is selected
-}
+
 
 function updateTimer() {
   let min = Math.floor(timer / 60);
@@ -71,10 +67,6 @@ function updateTimer() {
   }
 }
 
-function updateSolvedCount() {
-    const attemptedCount = selectedAnswers.filter(v => v !== undefined).length;
-    solvedNumberSpan.textContent = attemptedCount;
-}
 
 function submitResults() {
   clearInterval(timerInterval);
@@ -166,4 +158,4 @@ startBtn.onclick = () => {
 
 // Initial display
 showQuestion(current);
-// updateSolvedCount(); // Ensure solved count is 0 on load
+
