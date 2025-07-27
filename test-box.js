@@ -1,5 +1,5 @@
 let current = 0, selectedAnswers = [], quizLocked = [], correctCount = 0;
-let timer = 1200; // Increased timer to 20 minutes (20 * 60 seconds)
+let timer = 1800; // Increased timer to 30 minutes (30 * 60 seconds)
 let timerStarted = false;
 let timerInterval;
 
@@ -166,4 +166,4 @@ startBtn.onclick = () => {
 
 // Initial display
 showQuestion(current);
-updateSolvedCount(); // Ensure solved count is 0 on load
+// updateSolvedCount(); // Ensure solved count is 0 on load
