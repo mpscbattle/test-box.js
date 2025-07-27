@@ -2,7 +2,7 @@ let current = 0,
   selectedAnswers = [],
   quizLocked = [],
   correctCount = 0;
-let timer = 1800; // Increased timer to 30 minutes (30 * 60 seconds)
+let timer = 1500; // Increased timer to 25 minutes (25 * 60 seconds)
 let timerStarted = false;
 let timerInterval;
 const quizDiv = document.getElementById('quiz');
@@ -10,7 +10,7 @@ const timerDiv = document.getElementById('timer');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
 const submitBtn = document.getElementById('submitBtn');
-const resetBtn = document.getElementById('resetBtn');
+// const resetBtn = document.getElementById('resetBtn'); // Removed this line
 const reportCard = document.getElementById('reportCard');
 const analysisCard = document.getElementById('analysisCard');
 const viewAnalysisBtn = document.getElementById('viewAnalysisBtn');
@@ -122,7 +122,7 @@ function showAnalysis() {
 
     // Add explanation box if explanation exists
     if (q.explanation) {
-      html += `<div class='explanation-box'><b>Explanation : </b> ${q.explanation}</div>`;
+      html += `<div class='explanation-box'><b>Explanation:</b> ${q.explanation}</div>`;
     }
     container.innerHTML += html;
   });
@@ -144,7 +144,7 @@ nextBtn.onclick = () => {
 
 submitBtn.onclick = submitResults;
 viewAnalysisBtn.onclick = showAnalysis;
-resetBtn.onclick = () => location.reload();
+// resetBtn.onclick = () => location.reload(); // Removed this line
 
 startBtn.onclick = () => {
   if (!timerStarted) {
